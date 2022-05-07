@@ -21,8 +21,8 @@ default_region = "region1"
 inherit_tags = true
 
 regions = {
-  region1 = "australiaeast"
-  region2 = "australiacentral"
+  region1 = "westus3"
+  region2 = "centralus"
 }
 
 launchpad_key_names = {
