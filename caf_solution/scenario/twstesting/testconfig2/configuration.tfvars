@@ -1,7 +1,7 @@
 landingzone = {
   backend_type        = "azurerm"
   level               = "level1"
-  key                 = "testing_level1_storage"
+  key                 = "test_config2_storage"
   global_settings_key = "launchpad"
   tfstates = {
     launchpad = {
@@ -9,7 +9,7 @@ landingzone = {
       level   = "lower"
     }
     testing_level1 = {
-      tfstate = "testing_level1.tfstate"
+      tfstate = "test_config1.tfstate"
     }
   }
 }
@@ -19,7 +19,7 @@ storage_accounts = {
     name = "nsglogs"
     resource_group = {
       key    = "evh_examples"
-      lz_key = "testing_level1"
+      lz_key = "test_config1"
 
     }
     account_kind              = "BlobStorage"

@@ -70,6 +70,27 @@ jobs:
             --environment ${{ github.run_id }} \
             '-var tags={testing_job_id="${{ github.run_id }}"}'
 
+      - name: testconfig1
+        run: |
+          sleep 180
+          /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a apply \
+            -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig1 \
+            -tfstate test_config1.tfstate \
+            -level level1 \
+            -parallelism=30 \
+            --environment ${{ github.run_id }} \
+            '-var tags={testing_job_id="${{ github.run_id }}"}'
+      - name: testconfig2
+        run: |
+          sleep 180
+          /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a apply \
+            -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig2 \
+            -tfstate test_config2_storage.tfstate \
+            -level level1 \
+            -parallelism=30 \
+            --environment ${{ github.run_id }} \
+            '-var tags={testing_job_id="${{ github.run_id }}"}'
+
   foundations_destroy:
     name: foundations_destroy
     runs-on: ubuntu-latest
@@ -114,6 +135,24 @@ jobs:
             --environment ${{ github.run_id }} \
             '-var random_length=${{ matrix.random_length }}' \
             '-var prefix=g${{ github.run_id }}' \
+            '-var tags={testing_job_id="${{ github.run_id }}"}'
+      - name: testconfig1
+        run: |
+          /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a destroy \
+            -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig1 \
+            -tfstate test_config1.tfstate \
+            -level level1 \
+            -parallelism=30 \
+            --environment ${{ github.run_id }} \
+            '-var tags={testing_job_id="${{ github.run_id }}"}'
+      - name: testconfig2
+        run: |
+          /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a destroy \
+            -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig2 \
+            -tfstate test_config2_storage.tfstate \
+            -level level1 \
+            -parallelism=30 \
+            --environment ${{ github.run_id }} \
             '-var tags={testing_job_id="${{ github.run_id }}"}'
 
       - name: Complete purge
