@@ -8,7 +8,7 @@ landingzone = {
       tfstate = "caf_launchpad.tfstate"
       level   = "lower"
     }
-    testing_level1 = {
+    test_config1 = {
       tfstate = "test_config1.tfstate"
     }
   }
