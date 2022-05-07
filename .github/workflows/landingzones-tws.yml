@@ -74,7 +74,7 @@ jobs:
     name: foundations_destroy
     runs-on: ubuntu-latest
     if: always()
-    needs: networking200
+    needs: foundations-100
 
     strategy:
       fail-fast: false
