@@ -149,21 +149,21 @@ jobs:
           az login --service-principal -u '${{ env.ARM_CLIENT_ID }}' -p '${{ env.ARM_CLIENT_SECRET }}' --tenant '${{ env.ARM_TENANT_ID }}'
           az account set -s  ${{ env.ARM_SUBSCRIPTION_ID }}
 
-      - name: destroy testconfig1
-        run: |
-          /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a destroy \
-            -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig1 \
-            -tfstate test_config1.tfstate \
-            -level level1 \
-            -parallelism=30 \
-            --environment ${{ github.run_id }} \
-            '-var tags={testing_job_id="${{ github.run_id }}"}'
-
       - name: destroy testconfig2
         run: |
           /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a destroy \
             -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig2 \
             -tfstate test_config2_storage.tfstate \
+            -level level1 \
+            -parallelism=30 \
+            --environment ${{ github.run_id }} \
+            '-var tags={testing_job_id="${{ github.run_id }}"}'
+
+      - name: destroy testconfig1
+        run: |
+          /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a destroy \
+            -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig1 \
+            -tfstate test_config1.tfstate \
             -level level1 \
             -parallelism=30 \
             --environment ${{ github.run_id }} \
