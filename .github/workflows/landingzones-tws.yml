@@ -60,8 +60,8 @@ jobs:
             '-var tags={testing_job_id="${{ github.run_id }}"}'
 
 
-  mytests:
-    name: mytests
+  testconfig1-deploy:
+    name: testconfig1-deploy
     runs-on: ubuntu-latest
 
     needs: foundations100
@@ -96,6 +96,33 @@ jobs:
             -parallelism=30 \
             --environment ${{ github.run_id }} \
             '-var tags={testing_job_id="${{ github.run_id }}"}'
+
+  testconfig1-destroy:
+    name: testconfig1-destroy
+    runs-on: ubuntu-latest
+
+    needs: testconfig1-deploy
+
+    strategy:
+      fail-fast: false
+      matrix:
+          config_files: [
+            "caf_solution/scenario/twstesting/testconfig1",
+            "caf_solution/scenario/twstesting/testconfig2"
+          ]
+
+    container:
+      image: aztfmod/rover:0.15.5-2202.2503
+      options: --user 0
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login azure
+        run: |
+          az login --service-principal -u '${{ env.ARM_CLIENT_ID }}' -p '${{ env.ARM_CLIENT_SECRET }}' --tenant '${{ env.ARM_TENANT_ID }}'
+          az account set -s  ${{ env.ARM_SUBSCRIPTION_ID }}
+
       - name: destroy testconfig1
         run: |
           sleep 20
@@ -111,7 +138,7 @@ jobs:
     name: foundations_destroy
     runs-on: ubuntu-latest
     if: always()
-    needs: mytests
+    needs: testconfig1-destroy
 
     strategy:
       fail-fast: false
