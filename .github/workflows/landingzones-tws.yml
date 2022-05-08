@@ -47,7 +47,7 @@ jobs:
 
           echo "local user: $(whoami)"
 
-      - name: launchpad
+      - name: deploy launchpad
         run: |
           /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_launchpad -a apply \
             -var-folder ${GITHUB_WORKSPACE}/caf_launchpad/scenario/100 \
@@ -81,7 +81,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: testconfig1
+      - name: deploy testconfig1
         run: |
           sleep 180
           /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a apply \
@@ -91,7 +91,7 @@ jobs:
             -parallelism=30 \
             --environment ${{ github.run_id }} \
             '-var tags={testing_job_id="${{ github.run_id }}"}'
-      - name: testconfig2
+      - name: deploy testconfig2
         run: |
           sleep 180
           /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a apply \
@@ -102,6 +102,7 @@ jobs:
             --environment ${{ github.run_id }} \
             '-var tags={testing_job_id="${{ github.run_id }}"}'
            - name: testconfig2
+      - name: destroy testconfig2
         run: |
           /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a destroy \
             -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig2 \
@@ -110,7 +111,7 @@ jobs:
             -parallelism=30 \
             --environment ${{ github.run_id }} \
             '-var tags={testing_job_id="${{ github.run_id }}"}'
-      - name: testconfig1
+      - name: destroy testconfig1
         run: |
           /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a destroy \
             -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig1 \
@@ -145,7 +146,7 @@ jobs:
 
           echo "local user: $(whoami)"
 
-      - name: launchpad
+      - name: destroy launchpad
         run: |
           /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_launchpad -a destroy \
             -var-folder ${GITHUB_WORKSPACE}/caf_launchpad/scenario/100  \
