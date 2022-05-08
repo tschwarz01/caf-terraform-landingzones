@@ -88,7 +88,7 @@ jobs:
 
       - name: deploy testconfig1
         run: |
-          sleep 20
+          sleep 180
           /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a apply \
             -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig1 \
             -tfstate test_config1.tfstate \
@@ -125,7 +125,6 @@ jobs:
 
       - name: destroy testconfig1
         run: |
-          sleep 20
           /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a destroy \
             -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig1 \
             -tfstate test_config1.tfstate \
