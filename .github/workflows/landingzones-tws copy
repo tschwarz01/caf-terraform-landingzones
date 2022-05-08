@@ -59,27 +59,16 @@ jobs:
             '-var prefix=g${{ github.run_id }}' \
             '-var tags={testing_job_id="${{ github.run_id }}"}'
 
-
-  mytests:
-    name: mytests
-    runs-on: ubuntu-latest
-
-    needs: foundations100
-
-    strategy:
-      fail-fast: false
-      matrix:
-          config_files: [
-            "caf_solution/scenario/twstesting/testconfig1",
-            "caf_solution/scenario/twstesting/testconfig2"
-          ]
-
-    container:
-      image: aztfmod/rover:0.15.5-2202.2503
-      options: --user 0
-
-    steps:
-      - uses: actions/checkout@v2
+      - name: foundations
+        run: |
+          sleep 180
+          /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a apply \
+            -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/foundations/100-passthrough \
+            -tfstate caf_foundations.tfstate \
+            -level level1 \
+            -parallelism=30 \
+            --environment ${{ github.run_id }} \
+            '-var tags={testing_job_id="${{ github.run_id }}"}'
 
       - name: testconfig1
         run: |
@@ -97,24 +86,6 @@ jobs:
           /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a apply \
             -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig2 \
             -tfstate test_config2_storage.tfstate \
-            -level level1 \
-            -parallelism=30 \
-            --environment ${{ github.run_id }} \
-            '-var tags={testing_job_id="${{ github.run_id }}"}'
-           - name: testconfig2
-        run: |
-          /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a destroy \
-            -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig2 \
-            -tfstate test_config2_storage.tfstate \
-            -level level1 \
-            -parallelism=30 \
-            --environment ${{ github.run_id }} \
-            '-var tags={testing_job_id="${{ github.run_id }}"}'
-      - name: testconfig1
-        run: |
-          /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a destroy \
-            -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig1 \
-            -tfstate test_config1.tfstate \
             -level level1 \
             -parallelism=30 \
             --environment ${{ github.run_id }} \
@@ -145,6 +116,33 @@ jobs:
 
           echo "local user: $(whoami)"
 
+      - name: testconfig2
+        run: |
+          /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a destroy \
+            -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig2 \
+            -tfstate test_config2_storage.tfstate \
+            -level level1 \
+            -parallelism=30 \
+            --environment ${{ github.run_id }} \
+            '-var tags={testing_job_id="${{ github.run_id }}"}'
+      - name: testconfig1
+        run: |
+          /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a destroy \
+            -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig1 \
+            -tfstate test_config1.tfstate \
+            -level level1 \
+            -parallelism=30 \
+            --environment ${{ github.run_id }} \
+            '-var tags={testing_job_id="${{ github.run_id }}"}'
+      - name: foundations
+        run: |
+          /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a destroy \
+            -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/foundations/100-passthrough \
+            -tfstate caf_foundations.tfstate \
+            -level level1 \
+            -parallelism=30 \
+            --environment ${{ github.run_id }} \
+            '-var tags={testing_job_id="${{ github.run_id }}"}'
       - name: launchpad
         run: |
           /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_launchpad -a destroy \
