@@ -93,8 +93,8 @@ jobs:
             --environment ${{ github.run_id }} \
             '-var tags={testing_job_id="${{ github.run_id }}"}'
 
-  testconfig1-destroy:
-    name: testconfig1-destroy
+  testconfig2-deploy:
+    name: testconfig2-deploy
     runs-on: ubuntu-latest
 
     needs: testconfig1-deploy
@@ -102,6 +102,40 @@ jobs:
     strategy:
       fail-fast: false
       max-parallel: 1
+
+    container:
+      image: aztfmod/rover:0.15.5-2202.2503
+      options: --user 0
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login azure
+        run: |
+          az login --service-principal -u '${{ env.ARM_CLIENT_ID }}' -p '${{ env.ARM_CLIENT_SECRET }}' --tenant '${{ env.ARM_TENANT_ID }}'
+          az account set -s  ${{ env.ARM_SUBSCRIPTION_ID }}
+
+      - name: deploy testconfig2
+        run: |
+          sleep 180
+          /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a apply \
+            -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig2 \
+            -tfstate test_config2_storage.tfstate \
+            -level level1 \
+            -parallelism=30 \
+            --environment ${{ github.run_id }} \
+            '-var tags={testing_job_id="${{ github.run_id }}"}'
+
+  testconfig-destroy:
+    name: testconfig-destroy
+    runs-on: ubuntu-latest
+
+    needs:
+      - testconfig1-deploy
+      - testconfig2-deploy
+
+    strategy:
+      fail-fast: false
 
     container:
       image: aztfmod/rover:0.15.5-2202.2503
@@ -125,11 +159,21 @@ jobs:
             --environment ${{ github.run_id }} \
             '-var tags={testing_job_id="${{ github.run_id }}"}'
 
+      - name: destroy testconfig2
+        run: |
+          /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a destroy \
+            -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig2 \
+            -tfstate test_config2_storage.tfstate \
+            -level level1 \
+            -parallelism=30 \
+            --environment ${{ github.run_id }} \
+            '-var tags={testing_job_id="${{ github.run_id }}"}'
+
   foundations_destroy:
     name: foundations_destroy
     runs-on: ubuntu-latest
     if: always()
-    needs: testconfig1-destroy
+    needs: testconfig-destroy
 
     strategy:
       fail-fast: false
