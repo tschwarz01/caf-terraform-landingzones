@@ -68,11 +68,7 @@ jobs:
 
     strategy:
       fail-fast: false
-      matrix:
-          config_files: [
-            "caf_solution/scenario/twstesting/testconfig1",
-            "caf_solution/scenario/twstesting/testconfig2"
-          ]
+      max-parallel: 1
 
     container:
       image: aztfmod/rover:0.15.5-2202.2503
@@ -105,11 +101,7 @@ jobs:
 
     strategy:
       fail-fast: false
-      matrix:
-          config_files: [
-            "caf_solution/scenario/twstesting/testconfig1",
-            "caf_solution/scenario/twstesting/testconfig2"
-          ]
+      max-parallel: 1
 
     container:
       image: aztfmod/rover:0.15.5-2202.2503
