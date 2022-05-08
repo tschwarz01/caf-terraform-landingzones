@@ -88,7 +88,7 @@ jobs:
 
       - name: deploy testconfig1
         run: |
-          sleep 20
+          sleep 60
           /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a apply \
             -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig1 \
             -tfstate test_config1.tfstate \
@@ -98,7 +98,7 @@ jobs:
             '-var tags={testing_job_id="${{ github.run_id }}"}'
       - name: deploy testconfig2
         run: |
-          sleep 20
+          sleep 60
           /tf/rover/rover.sh -lz ${GITHUB_WORKSPACE}/caf_solution -a apply \
             -var-folder ${GITHUB_WORKSPACE}/caf_solution/scenario/twstesting/testconfig2 \
             -tfstate test_config2_storage.tfstate \
